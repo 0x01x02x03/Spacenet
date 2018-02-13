@@ -6,6 +6,16 @@ This project is complete with a full explained UsersGuide so this ReadMe.md is j
 
 __NOTE:__ Something inside the UsersGuide doesn't reflect the current version but the Web Gui is intuitive so it's not necessary to update the Doc.
 
+__IMPORTANT:__ Pip doesn't always generate a good 'requirements.txt' file , if for some reasons you can't install via .txt file just start the server.py file with python and install the libraries that the compiler can't find.
+
+Ex:
+
+'Error: No module named CherryPy'
+
+So now you can just type :
+
+'sudo pip install CherryPy'
+
 # Demo
 Here you can see Spacenet in action : https://www.youtube.com/watch?v=_gUft6FBXsA
 
