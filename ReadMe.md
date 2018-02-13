@@ -10,11 +10,11 @@ __IMPORTANT:__ Pip doesn't always generate a good 'requirements.txt' file , if f
 
 Ex:
 
-'Error: No module named CherryPy'
+'_Error: No module named CherryPy_'
 
 So now you can just type :
 
-'sudo pip install CherryPy'
+_sudo pip install CherryPy_
 
 # Demo
 Here you can see Spacenet in action : https://www.youtube.com/watch?v=_gUft6FBXsA
